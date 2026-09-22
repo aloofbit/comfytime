@@ -1,11 +1,11 @@
 # comfytime
 
-> **Very early alpha.** Tested only on one computer -- mine -- with one 1.12 client build (VanillaFixes +
+> **Very early alpha.** Tested only on one computer (mine) with one 1.12 client build (VanillaFixes +
 > DXVK). It writes into the client's memory. Back up your client folder first, and if anything goes wrong
 > just remove the `comfytime.dll` line from `dlls.txt`.
 
 Set the time of day in the World of Warcraft 1.12 client. The sky, the sun and the world's lighting follow
-the hour you choose -- noon in a forest, dusk in a city, whenever you like. **Your screen only:** the server
+the hour you choose: noon in a forest, dusk in a city, whenever you like. **Your screen only:** the server
 keeps its own time and nobody else sees a difference.
 
 A sibling of [comfyatmosphere](https://github.com/aloofbit/comfyatmosphere) (fog, sun rays, volumetric light),
@@ -50,12 +50,12 @@ that passed, in any of several encodings):
 | `0x00CE8574` | minutes since midnight, float |
 
 In the world the client rewrites them every frame, between `BeginScene` and `Present`. So comfytime writes
-the chosen time at `Present` and again at `BeginScene` -- just before the sky is drawn -- and the second write
+the chosen time at `Present` and again at `BeginScene`, just before the sky is drawn, and the second write
 wins. Both are Direct3D calls: comfytime finds DXVK's device vtable through a throwaway device and patches
 those two slots in place, the same way comfygrass and comfyfog attach.
 
 Before its first write it checks that the three addresses hold a consistent time, and refuses (and logs why)
-if they do not -- which is what another client build would do. There, Ctrl+F12 finds the new addresses:
+if they do not, which is what another client build would do. There, Ctrl+F12 finds the new addresses:
 read the minimap clock, press Ctrl+F12, keep playing for about six minutes, and `comfytime.log` lists what
 matched. Put those into the ini.
 
@@ -72,4 +72,4 @@ cmake --build build --config Release
 
 ## Licence
 
-GPL-3.0 -- see [LICENSE](LICENSE).
+GPL-3.0. See [LICENSE](LICENSE).
