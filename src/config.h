@@ -1,4 +1,4 @@
-// comfytime.ini -- the time of day to show, and the addresses it lives at.
+// comfytime.ini: the time of day to show, and the addresses it lives at.
 #pragma once
 
 #include <windows.h>

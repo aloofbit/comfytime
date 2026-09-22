@@ -1,14 +1,14 @@
-// comfytime -- set the time of day in the 1.12 client, on your screen only.
+// comfytime: set the time of day in the 1.12 client, on your screen only.
 //
 // The server sets the game clock and 1.12 gives no command to change it. The client keeps the time in
 // memory (timeofday.cpp has the addresses and how they were found) and builds the sky, the sun and the
-// world's lighting from it -- so writing a chosen time there moves all of them.
+// world's lighting from it, so writing a chosen time there moves all of them.
 //
 // Once in the world the client rewrites those values every frame, somewhere between BeginScene and
-// Present. So the chosen time is written at Present and again at BeginScene, just before the sky is drawn
-// from it: the second write is the one that wins. Both are Direct3D calls, so comfytime attaches the way its
-// siblings do -- a throwaway device names DXVK's shared IDirect3DDevice9 vtable, and two slots in it are
-// patched in place (see comfygrass's README for why in place, and why a throwaway device).
+// Present. So the chosen time is written at Present and again at BeginScene, immediately before the sky is
+// drawn from it: the second write is the one that wins. Both are Direct3D calls, so comfytime attaches the
+// way its siblings do: a throwaway device names DXVK's shared IDirect3DDevice9 vtable, and two slots in it
+// are patched in place (see comfygrass's README for why in place, and why a throwaway device).
 //
 // Taking turns: comfygrass, comfyfog and comfytime all patch that one vtable, on background threads, at
 // start-up. Two installers flipping the same page's protection at once can leave it read-only under the
@@ -192,7 +192,7 @@ namespace
             }
             if ((Now() - t0) * 1000.0 > g_cfg.chainWaitMs)
             {
-                Log("comfygrass/comfyfog loaded but not finished within %d ms -- patching anyway", g_cfg.chainWaitMs);
+                Log("comfygrass/comfyfog loaded but not finished within %d ms; patching anyway", g_cfg.chainWaitMs);
                 return;
             }
             Sleep(20);
@@ -303,7 +303,7 @@ BOOL APIENTRY DllMain(HMODULE self, DWORD reason, LPVOID)
         }
         else
         {
-            Log("hook = 0, so nothing is patched -- comfytime is inert this run");
+            Log("hook = 0, so nothing is patched: comfytime is inert this run");
         }
     }
     return TRUE;
