@@ -387,6 +387,11 @@ void TimeStep(float hours)
     Log("--- time: %02d:%02d ---", static_cast<int>(g_hour), static_cast<int>(fmodf(g_hour * 60.0f, 60.0f)));
 }
 
+float TimeCurrentHour()
+{
+    return g_hour < 0.0f ? g_cfg.time.hour : g_hour;
+}
+
 void TimeApply(const char* where)
 {
     const TimeSettings& t = g_cfg.time;

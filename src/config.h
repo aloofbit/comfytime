@@ -21,6 +21,8 @@ struct Settings
     bool  hook        = true;         // 0: load, log, patch nothing (bisecting)
     int   reloadKey   = VK_F11;       // reload comfytime.ini (comfyfog reloads its own on the same key)
     int   scanKey     = VK_F12;       // with Ctrl: search memory for the game clock (read-only)
+    int   saveKey     = VK_HOME;      // with Ctrl: write the time being shown back to the ini, so the
+                                      // next start comes up with the same sun
     int   chainWaitMs = 10000;        // how long to wait for comfygrass / comfyfog to finish patching
 };
 

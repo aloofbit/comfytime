@@ -15,7 +15,8 @@ works without the other.
 
 | Key | |
 | --- | --- |
-| Ctrl+PageUp / PageDown | An hour later / earlier |
+| Ctrl+PageUp / PageDown | Later / earlier by `step` hours; hold to keep moving |
+| Ctrl+Home | Save the time being shown into `comfytime.ini` |
 | F11 | Reload `comfytime.ini` |
 | Ctrl+F12 | Search memory for the game clock (read-only; for a different `WoW.exe`, see below) |
 

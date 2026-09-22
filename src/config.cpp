@@ -65,6 +65,7 @@ void LoadSettings(const wchar_t* ini)
     s.logEnabled  = GetB(kGeneral, L"log",         s.logEnabled,  ini);
     s.hook        = GetB(kGeneral, L"hook",        s.hook,        ini);
     s.reloadKey   = GetI(kGeneral, L"reloadKey",   s.reloadKey,   ini);
+    s.saveKey     = GetI(kGeneral, L"saveKey",     s.saveKey,     ini);
     s.scanKey     = GetI(kGeneral, L"scanKey",     s.scanKey,     ini);
     s.chainWaitMs = GetI(kGeneral, L"chainWaitMs", s.chainWaitMs, ini);
 
