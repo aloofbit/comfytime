@@ -26,6 +26,7 @@
 #include "timeofday.h"
 
 #include <cstdarg>
+#include <cmath>
 #include <cstdio>
 
 namespace
@@ -100,7 +101,7 @@ namespace
     PresentFn    g_oPresent    = nullptr;
     BeginSceneFn g_oBeginScene = nullptr;
 
-    bool g_reloadDown = false, g_scanDown = false, g_upDown = false, g_dnDown = false;
+    bool g_reloadDown = false, g_scanDown = false, g_upDown = false, g_dnDown = false, g_saveDown = false;
 
     // Keys only count while the client has focus, so typing into another window does nothing here.
     bool ClientFocused()
@@ -124,6 +125,22 @@ namespace
             Log("--- reloaded: time %s, hour %.2f ---", g_cfg.time.enabled ? "ON" : "OFF", g_cfg.time.hour);
         }
         g_reloadDown = reload;
+
+        // Ctrl+Home writes the time being shown into the ini, under `hour`: the sun you stepped to is
+        // then what the next start gives you, which is what testing the same way twice needs.
+        const bool save = down(g_cfg.saveKey);
+        if (save && !g_saveDown && ctrl)
+        {
+            const float hour = TimeCurrentHour();
+            wchar_t value[32];
+            _snwprintf_s(value, _TRUNCATE, L"%.4f", hour);
+            if (WritePrivateProfileStringW(L"time", L"hour", value, g_iniPath))
+                Log("--- saved: hour = %.4f (%02d:%02d) ---", hour, static_cast<int>(hour),
+                    static_cast<int>(fmodf(hour * 60.0f, 60.0f)));
+            else
+                Log("could not write the ini (%lu)", GetLastError());
+        }
+        g_saveDown = save;
 
         const bool scan = down(g_cfg.scanKey);
         if (scan && !g_scanDown && ctrl)
