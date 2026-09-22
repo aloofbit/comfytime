@@ -130,10 +130,25 @@ namespace
             TimeScanStart();
         g_scanDown = scan;
 
+        // A press moves the time one step; holding the key keeps it moving, after a short wait so a
+        // single tap stays a single step.
         const bool up = ctrl && down(VK_PRIOR);
         const bool dn = ctrl && down(VK_NEXT);
-        if (up && !g_upDown) TimeStep(+1.0f);
-        if (dn && !g_dnDown) TimeStep(-1.0f);
+        const double now = Now();
+        static double heldSince = 0.0, lastRepeat = 0.0;
+        constexpr double kHoldWait   = 0.35;   // seconds before a held key starts repeating
+        constexpr double kRepeatEvery = 0.03;  // seconds between steps while held
+        if ((up && !g_upDown) || (dn && !g_dnDown))
+        {
+            TimeStep(up ? +g_cfg.time.step : -g_cfg.time.step);
+            heldSince = now;
+            lastRepeat = now;
+        }
+        else if ((up || dn) && now - heldSince > kHoldWait && now - lastRepeat >= kRepeatEvery)
+        {
+            TimeStep(up ? +g_cfg.time.step : -g_cfg.time.step);
+            lastRepeat = now;
+        }
         g_upDown = up; g_dnDown = dn;
     }
 

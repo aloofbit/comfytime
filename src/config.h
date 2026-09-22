@@ -7,6 +7,7 @@ struct TimeSettings
 {
     bool  enabled      = true;        // installing comfytime is the opt-in; this is the off switch
     float hour         = 13.0f;       // 0..24, fractions allowed (13.5 = 13:30)
+    float step         = 0.0167f;     // hours per Ctrl+PageUp / PageDown, 0.0167 is about a minute
     DWORD addrMinutes  = 0x00CE9B60;  // int minutes since midnight   (found by the Ctrl+F12 search)
     DWORD addrFraction = 0x00CE9B64;  // float fraction of the day
     DWORD addrMinutesF = 0x00CE8574;  // float minutes since midnight; 0 = leave alone
