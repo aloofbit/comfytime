@@ -1,4 +1,4 @@
-// timeofday -- finding where this WoW.exe keeps the time of day. Read-only.
+// timeofday: finding where this WoW.exe keeps the time of day. Read-only.
 //
 // The sky, the sun and the world's lighting all follow the game clock, which the server sets and 1.12
 // gives no command to change. To control it we first need to know where the client keeps it, and the
@@ -8,7 +8,7 @@
 // The test that cannot be fooled easily: the game clock runs at real speed, one game minute per real
 // minute. So snapshot every 4-byte value in WoW.exe's writable sections, wait, snapshot again, and keep
 // only values that (a) look like a time of day in some encoding and (b) advanced by exactly the minutes
-// that really passed. Then keep re-checking the survivors: a clock keeps matching, a coincidence drops out.
+// that passed. Then keep re-checking the survivors: a clock keeps matching, a coincidence drops out.
 //
 // Encodings tried, all modulo one day:
 //   minutes since midnight, int      (0..1439)
@@ -24,13 +24,13 @@
 //   0x00CE9B60  int    minutes since midnight      988 = 16:28
 //   0x00CE9B64  float  fraction of the day         0.6865, continuous (carries the seconds)
 //   0x00CE8574  float  minutes since midnight      988.0
-// The first two sit side by side -- the client's game-time pair. (A second pair at 0x00CE9D00/04 ran at
+// The first two sit side by side: the client's game-time pair. (A second pair at 0x00CE9D00/04 ran at
 // the same rate but 78 minutes behind; not understood yet, and not written.)
 //
 // Control (TimeApply) writes a chosen time into all three, twice a frame: after the frame at Present, and
-// again at BeginScene, just before the sky is drawn. Whether that sticks depends on whether the client
-// keeps this value and advances it, or rebuilds it every frame from the server clock -- so it also checks,
-// before each write, whether the client has overwritten the last one, and logs what it finds.
+// again at BeginScene, immediately before the sky is drawn. Whether that sticks depends on whether the
+// client keeps this value and advances it, or rebuilds it every frame from the server clock. So it also
+// checks, before each write, whether the client has overwritten the last one, and logs what it finds.
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -179,7 +179,7 @@ namespace
         int perKind[kKinds] = {};
         for (const Candidate& c : g_cands)
             perKind[c.kind]++;
-        Log("time scan: %s -- %u candidates (minutes %d, seconds %d, packed %d, fraction %d, hours %d, minute-float %d)",
+        Log("time scan (%s): %u candidates (minutes %d, seconds %d, packed %d, fraction %d, hours %d, minute-float %d)",
             heading, static_cast<unsigned>(g_cands.size()), perKind[kMinInt], perKind[kSecInt], perKind[kPacked],
             perKind[kFrac], perKind[kHours], perKind[kMinFloat]);
         if (g_cands.size() > 40)
@@ -332,7 +332,7 @@ namespace
         return (mbi.Protect & rw) && !(mbi.Protect & PAGE_GUARD);
     }
 
-    // The three still hold the time, in the encodings we expect -- a different WoW.exe would have moved them.
+    // The three still hold the time, in the encodings we expect. A different WoW.exe would have moved them.
     bool Validate()
     {
         const TimeSettings& t = g_cfg.time;
@@ -340,7 +340,7 @@ namespace
         const uintptr_t aMin = t.addrMinutes + slide, aFrac = t.addrFraction + slide, aMinF = t.addrMinutesF + slide;
         if (!Writable(aMin) || !Writable(aFrac) || (t.addrMinutesF && !Writable(aMinF)))
         {
-            Log("time: refusing to write -- an address is not writable memory (different WoW.exe?)");
+            Log("time: refusing to write: an address is not writable memory (different WoW.exe?)");
             return false;
         }
         uint32_t m = 0, fr = 0, mf = 0;
@@ -353,7 +353,7 @@ namespace
                         (!t.addrMinutesF || (Finite(minF) && fabsf(minF - static_cast<float>(m)) < 2.0f));
         if (!ok)
         {
-            Log("time: refusing to write -- the addresses do not hold a consistent time (minutes %u, fraction %.4f, "
+            Log("time: refusing to write: the addresses do not hold a consistent time (minutes %u, fraction %.4f, "
                 "minute-float %.2f). Re-run the Ctrl+F12 search for this WoW.exe.", m, frac, minF);
             return false;
         }
@@ -364,7 +364,7 @@ namespace
 }
 
 // A reload re-reads the chosen hour, but does not re-check addresses that already passed. Mid-session
-// they hold a mix of the client's time and ours -- it rewrites some of them every frame -- which the
+// they hold a mix of the client's time and ours (it rewrites some of them every frame), which the
 // consistency test rightly rejects, and did: time control went dead after the first F11. The test is
 // there to catch a different WoW.exe, which a reload cannot bring; changed addresses still re-check.
 void TimeReload()
@@ -420,7 +420,7 @@ void TimeApply(const char* where)
             ++g_reports;
             Log("time: at %s the client had %s our time (%d overwritten, %d intact so far)%s", where,
                 fought ? "OVERWRITTEN" : "kept", g_fights, g_holds,
-                fought ? " -- it rebuilds the time itself; writing just before the sky is what can still work" : "");
+                fought ? ". It rebuilds the time itself; writing immediately before the sky is what can still work" : "");
         }
     }
 
