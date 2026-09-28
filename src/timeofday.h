@@ -6,5 +6,6 @@ void TimeScanTick();    // once a frame
 
 void TimeApply(const char* where);   // write the chosen time, if [time] enabled (Present and BeginScene)
 void TimeStep(float hours);          // move the chosen time (Ctrl+PageUp/PageDown)
+void TimeToggleDayNight();           // go to dayHour or nightHour, whichever is further away (Ctrl+End)
 void TimeReload();                   // after the ini is reloaded
 float TimeCurrentHour();             // the time being shown, for writing back to the ini

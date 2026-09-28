@@ -58,6 +58,8 @@ void LoadSettings(const wchar_t* ini)
     s.time.enabled      = GetB(kTime, L"enabled", s.time.enabled, ini);
     s.time.hour         = Clamp(GetF(kTime, L"hour", s.time.hour, ini), 0.0f, 24.0f);
     s.time.step         = Clamp(GetF(kTime, L"step", s.time.step, ini), 0.001f, 6.0f);
+    s.time.dayHour      = Clamp(GetF(kTime, L"dayHour", s.time.dayHour, ini), 0.0f, 24.0f);
+    s.time.nightHour    = Clamp(GetF(kTime, L"nightHour", s.time.nightHour, ini), 0.0f, 24.0f);
     s.time.addrMinutes  = GetX(kTime, L"addrMinutes",  s.time.addrMinutes,  ini);
     s.time.addrFraction = GetX(kTime, L"addrFraction", s.time.addrFraction, ini);
     s.time.addrMinutesF = GetX(kTime, L"addrMinutesF", s.time.addrMinutesF, ini);
@@ -66,6 +68,7 @@ void LoadSettings(const wchar_t* ini)
     s.hook        = GetB(kGeneral, L"hook",        s.hook,        ini);
     s.reloadKey   = GetI(kGeneral, L"reloadKey",   s.reloadKey,   ini);
     s.saveKey     = GetI(kGeneral, L"saveKey",     s.saveKey,     ini);
+    s.dayNightKey = GetI(kGeneral, L"dayNightKey", s.dayNightKey, ini);
     s.scanKey     = GetI(kGeneral, L"scanKey",     s.scanKey,     ini);
     s.chainWaitMs = GetI(kGeneral, L"chainWaitMs", s.chainWaitMs, ini);
 

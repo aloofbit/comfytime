@@ -101,7 +101,8 @@ namespace
     PresentFn    g_oPresent    = nullptr;
     BeginSceneFn g_oBeginScene = nullptr;
 
-    bool g_reloadDown = false, g_scanDown = false, g_upDown = false, g_dnDown = false, g_saveDown = false;
+    bool g_reloadDown = false, g_scanDown = false, g_upDown = false, g_dnDown = false, g_saveDown = false,
+         g_dayNightDown = false;
 
     // Keys only count while the client has focus, so typing into another window does nothing here.
     bool ClientFocused()
@@ -141,6 +142,11 @@ namespace
                 Log("could not write the ini (%lu)", GetLastError());
         }
         g_saveDown = save;
+
+        const bool dayNight = down(g_cfg.dayNightKey);
+        if (dayNight && !g_dayNightDown && ctrl)
+            TimeToggleDayNight();
+        g_dayNightDown = dayNight;
 
         const bool scan = down(g_cfg.scanKey);
         if (scan && !g_scanDown && ctrl)

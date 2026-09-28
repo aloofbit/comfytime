@@ -387,6 +387,20 @@ void TimeStep(float hours)
     Log("--- time: %02d:%02d ---", static_cast<int>(g_hour), static_cast<int>(fmodf(g_hour * 60.0f, 60.0f)));
 }
 
+// The time shown is counted as day or night by which of the two hours it is nearer to, around the clock.
+// So a press always goes to the other one, also from a time that Ctrl+PageUp / PageDown moved.
+void TimeToggleDayNight()
+{
+    if (!g_cfg.time.enabled)
+        return;
+    const float now = TimeCurrentHour();
+    auto apart = [now](float h) { const float d = fabsf(fmodf(now - h + 48.0f, 24.0f)); return d < 12.0f ? d : 24.0f - d; };
+    const bool isDay = apart(g_cfg.time.dayHour) <= apart(g_cfg.time.nightHour);
+    g_hour = fmodf((isDay ? g_cfg.time.nightHour : g_cfg.time.dayHour) + 24.0f, 24.0f);
+    Log("--- %s: %02d:%02d ---", isDay ? "night" : "day", static_cast<int>(g_hour),
+        static_cast<int>(fmodf(g_hour * 60.0f, 60.0f)));
+}
+
 float TimeCurrentHour()
 {
     return g_hour < 0.0f ? g_cfg.time.hour : g_hour;

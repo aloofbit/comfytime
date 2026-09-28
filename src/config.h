@@ -8,6 +8,8 @@ struct TimeSettings
     bool  enabled      = true;        // installing comfytime is the opt-in; this is the off switch
     float hour         = 13.0f;       // 0..24, fractions allowed (13.5 = 13:30)
     float step         = 0.0167f;     // hours per Ctrl+PageUp / PageDown, 0.0167 is about a minute
+    float dayHour      = 13.0f;       // Ctrl+End switches between these two
+    float nightHour    = 1.0f;
     DWORD addrMinutes  = 0x00CE9B60;  // int minutes since midnight   (found by the Ctrl+F12 search)
     DWORD addrFraction = 0x00CE9B64;  // float fraction of the day
     DWORD addrMinutesF = 0x00CE8574;  // float minutes since midnight; 0 = leave alone
@@ -23,6 +25,7 @@ struct Settings
     int   scanKey     = VK_F12;       // with Ctrl: search memory for the game clock (read-only)
     int   saveKey     = VK_HOME;      // with Ctrl: write the time being shown back to the ini, so the
                                       // next start comes up with the same sun
+    int   dayNightKey = VK_END;       // with Ctrl: switch between dayHour and nightHour
     int   chainWaitMs = 10000;        // how long to wait for comfygrass / comfyfog to finish patching
 };
 

@@ -20,6 +20,7 @@ works without the other.
 | Key | |
 | --- | --- |
 | Ctrl+PageUp / PageDown | Later / earlier by `step` hours; hold to keep moving |
+| Ctrl+End | Switch between day (`dayHour`) and night (`nightHour`) |
 | Ctrl+Home | Save the time being shown into `comfytime.ini` |
 | F11 | Reload `comfytime.ini` |
 | Ctrl+F12 | Search memory for the game clock (read-only; for a different `WoW.exe`, see below) |
@@ -30,6 +31,7 @@ works without the other.
 | --- | --- |
 | `enabled` | `0` uses the game's own time |
 | `hour` | The time to show, 0..24; fractions allowed (`13.5` is 13:30) |
+| `dayHour`, `nightHour` | The two times Ctrl+End switches between. Default 13 and 1 |
 | `addrMinutes`, `addrFraction`, `addrMinutesF` | Where this `WoW.exe` keeps the time (see below) |
 
 ## Install
