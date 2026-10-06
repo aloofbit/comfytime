@@ -203,16 +203,20 @@ namespace
         return m;
     }
 
-    // Until comfygrass and comfyfog, if loaded, have patched the last slot each of them installs:
-    // comfyfog's is DrawIndexedPrimitiveUP; comfygrass's is DrawIndexedPrimitive (and comfyfog waits for
-    // comfygrass itself, so with both loaded, comfyfog finishing means both have).
+    // Until comfygrass and comfyatmosphere, if loaded, have patched the last slot each of them installs:
+    // comfyatmosphere's is DrawIndexedPrimitiveUP; comfygrass's is DrawIndexedPrimitive (and comfyatmosphere waits
+    // for comfygrass itself, so with both loaded, comfyatmosphere finishing means both have).
+    // comfyatmosphere's DLL is comfyatmos.dll since its v0.10.0-alpha (2026-10-06), comfyfog.dll before. With both
+    // loaded, the new one stays off and only the old one patches, so the old one is waited for.
     void WaitForSiblings(IDirect3DDevice9Vtbl* v)
     {
         HMODULE grass = GetModuleHandleA("comfygrass.dll");
         HMODULE fog   = GetModuleHandleA("comfyfog.dll");
+        if (!fog)
+            fog = GetModuleHandleA("comfyatmos.dll");
         if (!grass && !fog)
         {
-            Log("neither comfygrass nor comfyfog is loaded, patching straight away");
+            Log("neither comfygrass nor comfyatmosphere is loaded, patching straight away");
             return;
         }
         const double t0 = Now();
@@ -225,12 +229,12 @@ namespace
             if (fogDone && grassDone)
             {
                 Log("%s%s%s patched first (waited %.0f ms), chaining on top", grass ? "comfygrass" : "",
-                    grass && fog ? " and " : "", fog ? "comfyfog" : "", 1000.0 * (Now() - t0));
+                    grass && fog ? " and " : "", fog ? "comfyatmosphere" : "", 1000.0 * (Now() - t0));
                 return;
             }
             if ((Now() - t0) * 1000.0 > g_cfg.chainWaitMs)
             {
-                Log("comfygrass/comfyfog loaded but not finished within %d ms; patching anyway", g_cfg.chainWaitMs);
+                Log("comfygrass/comfyatmosphere loaded but not finished within %d ms; patching anyway", g_cfg.chainWaitMs);
                 return;
             }
             Sleep(20);
