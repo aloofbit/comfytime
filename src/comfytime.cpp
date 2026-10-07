@@ -112,8 +112,34 @@ namespace
         return pid == GetCurrentProcessId();
     }
 
+    // comfytime.ini changed on disk: read it again, as F11 does (2026-10-07). comfyatmosphere's test runner sets the
+    // hour by writing the file: the keys it sends never reach GetAsyncKeyState.
+    void WatchIni()
+    {
+        static double   lastCheck = 0.0;
+        static FILETIME lastWrite = {};
+        const double now = Now();
+        if (now - lastCheck < 0.5)
+            return;
+        lastCheck = now;
+        WIN32_FILE_ATTRIBUTE_DATA fa = {};
+        if (!GetFileAttributesExW(g_iniPath, GetFileExInfoStandard, &fa))
+            return;
+        const bool first = lastWrite.dwLowDateTime == 0 && lastWrite.dwHighDateTime == 0;
+        if (CompareFileTime(&fa.ftLastWriteTime, &lastWrite) == 0)
+            return;
+        lastWrite = fa.ftLastWriteTime;
+        if (first)
+            return;
+        LoadSettings(g_iniPath);
+        TimeReload();
+        Log("--- reloaded (the file changed): time %s, hour %.2f ---", g_cfg.time.enabled ? "ON" : "OFF",
+            g_cfg.time.hour);
+    }
+
     void PollKeys()
     {
+        WatchIni();
         const bool focused = ClientFocused();
         auto down = [focused](int vk) { return focused && (GetAsyncKeyState(vk) & 0x8000) != 0; };
         const bool ctrl = down(VK_CONTROL);
