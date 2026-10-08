@@ -1,5 +1,12 @@
 # comfytime
 
+> [!IMPORTANT]
+> **comfytime is now part of [comfyatmosphere](https://github.com/aloofbit/comfyatmosphere)** (v0.12.0-alpha).
+> Its `comfyatmos.dll` sets the time of day, and its debug panel has a time slider and Lock time. Use
+> comfyatmosphere instead of this mod. Remove the line `comfytime.dll` from `dlls.txt`: while comfytime is loaded,
+> it sets the time and comfyatmosphere's time controls do nothing. The values in `comfytime.ini` go in the `[time]`
+> section of `comfyatmos.ini`, with the same names.
+
 **Bugs, questions and screenshots: [join our Discord](https://discord.gg/uhefX2efB7).**
 
 [![Discord](https://img.shields.io/badge/Discord-ComfyCraft-5865F2?logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/uhefX2efB7)
